@@ -62,10 +62,18 @@ export class User {
 
   // ****** Token && expired date ******
   @Prop()
-  verifyToken: string;
+  @IsNotEmpty({ message: 'Token cannot be empty' })
+  activationToken: string;
 
   @Prop()
-  verifyTokenExpired: string;
+  activationTokenExpired: string;
+
+  @Prop()
+  @IsNotEmpty({ message: 'Token cannot be empty' })
+  forgotPasswordToken: string;
+
+  @Prop()
+  forgotPasswordTokenExpired: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
