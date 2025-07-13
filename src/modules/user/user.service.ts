@@ -1,6 +1,6 @@
 import {
   ForgotPasswordDto,
-  NewPasswordDto,
+  RenewPasswordDto,
   ActivationTokenDto,
 } from '@/src/auth/dto/token.dto';
 import { hashPasswordHelper } from '@/src/helpers/utils';
@@ -133,7 +133,7 @@ export class UserService {
     return { message: user._id };
   }
 
-  async newPassword(data: NewPasswordDto) {
+  async renewPassword(data: RenewPasswordDto) {
     const { _id, forgotPasswordToken, password } = data;
 
     const user = await this.UserModel.findOne({ _id });

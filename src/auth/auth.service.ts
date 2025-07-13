@@ -1,7 +1,7 @@
 import {
   ActivationTokenDto,
   ForgotPasswordDto,
-  NewPasswordDto,
+  RenewPasswordDto,
 } from '@/src/auth/dto/token.dto';
 import { comparePasswordsHelper } from '@/src/helpers/utils';
 import { CreateUserDto } from '@/src/modules/user/dto/create-user.dto';
@@ -49,7 +49,7 @@ export class AuthService {
     return await this.userService.forgotPassword(data);
   }
 
-  async newPassword(data: NewPasswordDto) {
-    return await this.userService.newPassword(data);
+  async renewPassword(data: RenewPasswordDto) {
+    return await this.userService.renewPassword(data);
   }
 }

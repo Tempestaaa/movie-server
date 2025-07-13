@@ -12,7 +12,7 @@ export class ActivationTokenDto extends PickType(User, [
 
 export class ForgotPasswordDto extends PickType(User, ['email'] as const) {}
 
-export class NewPasswordDto extends PickType(User, [
+export class RenewPasswordDto extends PickType(User, [
   'password',
   'forgotPasswordToken',
 ] as const) {

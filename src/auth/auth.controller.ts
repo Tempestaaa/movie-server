@@ -13,7 +13,7 @@ import { Public } from '@/src/decorators/customize';
 import { CreateUserDto } from '@/src/modules/user/dto/create-user.dto';
 import {
   ForgotPasswordDto,
-  NewPasswordDto,
+  RenewPasswordDto,
   ActivationTokenDto,
 } from '@/src/auth/dto/token.dto';
 import { TransformInterceptor } from '@/src/common/transform.interceptor';
@@ -68,10 +68,10 @@ export class AuthController {
   }
 
   // ****** CHANGE TO NEW PASSWORD ******
-  @Post('new-password')
+  @Post('renew-password')
   @UseInterceptors(TransformInterceptor)
   @Public()
-  newPassword(@Body() data: NewPasswordDto) {
-    return this.authService.newPassword(data);
+  newPassword(@Body() data: RenewPasswordDto) {
+    return this.authService.renewPassword(data);
   }
 }
