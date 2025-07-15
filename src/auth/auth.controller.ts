@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Request,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from '@/src/auth/passport/local-auth.guard';
 import { AuthService } from '@/src/auth/auth.service';
 import { Public } from '@/src/decorators/customize';
@@ -14,9 +6,10 @@ import { CreateUserDto } from '@/src/modules/user/dto/create-user.dto';
 import {
   ForgotPasswordDto,
   RenewPasswordDto,
-  ActivationTokenDto,
+  ActivationCodeDto,
+  ResendActiveDto,
 } from '@/src/auth/dto/token.dto';
-import { TransformInterceptor } from '@/src/common/transform.interceptor';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +19,7 @@ export class AuthController {
   @Post('login')
   @Public()
   @UseGuards(LocalAuthGuard)
-  login(@Request() req) {
+  login(@Req() req) {
     return this.authService.login(req.user);
   }
 
@@ -39,37 +32,33 @@ export class AuthController {
 
   // ****** GET PROFILE ******
   @Get('profile')
-  getProfile(@Request() req) {
+  getProfile(@Req() req) {
     return req.user;
   }
 
-  // ****** CHECK ACTIVATION TOKEN ******
-  @Post('check-activation-token')
-  @UseInterceptors(TransformInterceptor)
+  // ****** VERIFY ACTIVATION CODE ******
+  @Post('verify-activation-token')
   @Public()
-  checkCode(@Body() data: ActivationTokenDto) {
-    return this.authService.checkToken(data);
+  verifyActivationCode(@Body() data: ActivationCodeDto) {
+    return this.authService.verifyActivationCode(data);
   }
 
   // ****** RESEND ACTIVATION TOKEN VIA EMAIL ******
-  @Post('retry-active')
-  @UseInterceptors(TransformInterceptor)
+  @Post('resend-active')
   @Public()
-  retryActive(@Body('email') email: string) {
-    return this.authService.retryActive(email);
+  retryActive(@Body() data: ResendActiveDto) {
+    return this.authService.resendActive(data);
   }
 
   // ****** FORGOT PASSWORD ******
   @Post('forgot-password')
-  @UseInterceptors(TransformInterceptor)
   @Public()
-  forgotPassword(@Body() data: ForgotPasswordDto) {
-    return this.authService.forgotPassword(data);
+  forgotPassword(@Body() data: ForgotPasswordDto, @Req() request: Request) {
+    return this.authService.forgotPassword(data, request);
   }
 
   // ****** CHANGE TO NEW PASSWORD ******
   @Post('renew-password')
-  @UseInterceptors(TransformInterceptor)
   @Public()
   newPassword(@Body() data: RenewPasswordDto) {
     return this.authService.renewPassword(data);

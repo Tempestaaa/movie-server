@@ -1,13 +1,15 @@
 import {
-  ActivationTokenDto,
+  ActivationCodeDto,
   ForgotPasswordDto,
   RenewPasswordDto,
+  ResendActiveDto,
 } from '@/src/auth/dto/token.dto';
 import { comparePasswordsHelper } from '@/src/helpers/utils';
 import { CreateUserDto } from '@/src/modules/user/dto/create-user.dto';
 import { UserService } from '@/src/modules/user/user.service';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -37,16 +39,16 @@ export class AuthService {
     return await this.userService.createUser(data);
   }
 
-  async checkToken(data: ActivationTokenDto) {
-    return await this.userService.checkToken(data);
+  async verifyActivationCode(data: ActivationCodeDto) {
+    return await this.userService.verifyActivationCode(data);
   }
 
-  async retryActive(email: string) {
-    return await this.userService.retryActive(email);
+  async resendActive(data: ResendActiveDto) {
+    return await this.userService.resendActive(data);
   }
 
-  async forgotPassword(data: ForgotPasswordDto) {
-    return await this.userService.forgotPassword(data);
+  async forgotPassword(data: ForgotPasswordDto, request: Request) {
+    return await this.userService.forgotPassword(data, request);
   }
 
   async renewPassword(data: RenewPasswordDto) {
