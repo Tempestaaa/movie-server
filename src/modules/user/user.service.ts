@@ -53,7 +53,7 @@ export class UserService {
     this.mailerService.sendMail({
       to: user.email,
       subject,
-      template: template ?? 'register',
+      template,
       context: {
         username: user.username ?? user.email,
         activationCode: others?.token,
@@ -129,7 +129,9 @@ export class UserService {
       activationCodeExpired: dayjs().add(5, 'minutes').toString(),
     });
 
-    this.sendEmail(user, token, 'Activate your account at Flix');
+    this.sendEmail(user, 'Activate your account at Flix', 'register', {
+      token,
+    });
 
     return { _id: user._id, message: 'Activation email has been sent' };
   }
@@ -139,6 +141,10 @@ export class UserService {
 
     const user = await this.UserModel.findOne({ email });
     if (!user) throw new BadRequestException('Account does not exist');
+
+    await user.updateOne({
+      forgotPasswordEmailExpired: dayjs().add(30, 'seconds').toString(),
+    });
 
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL') +
@@ -158,9 +164,12 @@ export class UserService {
     const user = await this.UserModel.findOne({ _id });
     if (!user) throw new BadRequestException('Account does not exist');
 
-    const hashPassword = await hashPasswordHelper(password);
-    await user.updateOne({ password: hashPassword });
-
-    return { message: 'Password successfully updated' };
+    if (dayjs().isBefore(user.forgotPasswordEmailExpired)) {
+      const hashPassword = await hashPasswordHelper(password);
+      await user.updateOne({ password: hashPassword });
+      return { message: 'Password successfully updated' };
+    } else {
+      throw new BadRequestException('Code expired');
+    }
   }
 }

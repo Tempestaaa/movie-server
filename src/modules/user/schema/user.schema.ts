@@ -67,6 +67,9 @@ export class User {
 
   @Prop()
   activationCodeExpired: string;
+
+  @Prop()
+  forgotPasswordEmailExpired: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
