@@ -143,7 +143,7 @@ export class UserService {
     if (!user) throw new BadRequestException('Account does not exist');
 
     await user.updateOne({
-      forgotPasswordEmailExpired: dayjs().add(30, 'seconds').toString(),
+      forgotPasswordEmailExpired: dayjs().add(1, 'hour').toString(),
     });
 
     const frontendUrl =
